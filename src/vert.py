@@ -1,7 +1,8 @@
 import socket
 
-def vert_scan(ip_base, startr, endr, port, timeout=0.1):
+def vert_scan(ip_base, startr, endr, port, timeout=0.01):
     running = []
+    err = []
     for p4 in range(int(startr), int(endr)+1):
         ip = f"{ip_base}.{p4}"
         addr = (ip, port)
@@ -11,15 +12,15 @@ def vert_scan(ip_base, startr, endr, port, timeout=0.1):
             s.connect(addr)
             running.append(f"{ip}:{port}")
         except Exception as e:
-            print(e)
-    return running
+            err.append(str(e))
+    return running, err
     
 
 if __name__ == "__main__":
-    ip = input("IP (0.0.0): ").split(".")[:3]
+    ip = ".".join(input("IP (0.0.0): ").split(".")[:3])
     startr, endr = input("Range (0:255): ").split(":")
-    port = int(input("Port:"))
+    port = int(input("Port: "))
     print(
-        vert_scan(ip, startr, endr, port),
-        sep = '\n'
+        *(vert_scan(ip, startr, endr, port)[0]),
+        sep = ' -> Running\n'
     )
